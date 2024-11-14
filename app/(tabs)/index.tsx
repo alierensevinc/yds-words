@@ -10,10 +10,12 @@ export default function HomeScreen() {
         setIndex((prevIndex) => (prevIndex + 1) % data.dictionary.length);
     };
 
+    const randomizedData = [...data.dictionary].sort(() => Math.random() - 0.5);
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>YDS Kelimeler</Text>
-            {data.dictionary.slice(index, index + 3).map((item, i) => (
+            {randomizedData.slice(index, index + 3).map((item, i) => (
                 <View key={i} style={[styles.cardWrapper, {transform: [{translateY: i * 15},]}]}>
                     <Card data={item} onDismiss={handleDismiss}/>
                 </View>
