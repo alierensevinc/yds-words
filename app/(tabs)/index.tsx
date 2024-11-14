@@ -12,7 +12,11 @@ export default function HomeScreen() {
 
     return (
         <View style={styles.container}>
-            <Card data={data.dictionary[index]} onDismiss={handleDismiss}/>
+            {data.dictionary.slice(index, index + 3).map((item, i) => (
+                <View key={i} style={[styles.cardWrapper, { transform: [{ translateY: i * 15 },] }]}>
+                    <Card data={item} onDismiss={handleDismiss}/>
+                </View>
+            ))}
         </View>
     );
 }
@@ -23,5 +27,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f5f5f5',
+    },
+    cardWrapper: {
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
