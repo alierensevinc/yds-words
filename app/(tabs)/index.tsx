@@ -21,8 +21,20 @@ export default function HomeScreen() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>YDS Kelimeler</Text>
-            <View style={[styles.cardWrapper, {transform: [{translateY: 1 * 15},]}]}>
-                {randomizedData.length > 0 && <Card data={randomizedData[0]}/>}
+            <View style={styles.stackContainer}>
+                {randomizedData.length > 0 && (
+                    <>
+                        <View style={[styles.cardWrapper, styles.cardPosition1]}>
+                            <Card data={randomizedData[0]} />
+                        </View>
+                        <View style={[styles.cardWrapper, styles.cardPosition2]}>
+                            <Card data={randomizedData[1]} />
+                        </View>
+                        <View style={[styles.cardWrapper, styles.cardPosition3]}>
+                            <Card data={randomizedData[2]} />
+                        </View>
+                    </>
+                )}
             </View>
         </View>
     );
@@ -42,9 +54,26 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#2980B9',
     },
+    stackContainer: {
+        position: 'relative',
+        width: 300,
+        height: 300,
+    },
     cardWrapper: {
         position: 'absolute',
-        justifyContent: 'center',
-        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+    },
+    cardPosition1: {
+        zIndex: 3,
+        transform: [{translateY: 0}],
+    },
+    cardPosition2: {
+        zIndex: 2,
+        transform: [{translateY: -15}],
+    },
+    cardPosition3: {
+        zIndex: 1,
+        transform: [{translateY: -30}],
     },
 });
