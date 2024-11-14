@@ -6,20 +6,12 @@ import Card from "@/components/Card";
 export default function HomeScreen() {
     const [index, setIndex] = useState(0);
 
-    const handleDismiss = () => {
-        setIndex((prevIndex) => (prevIndex + 1) % data.dictionary.length);
-    };
-
-    const randomizedData = [...data.dictionary].sort(() => Math.random() - 0.5);
-
     return (
         <View style={styles.container}>
             <Text style={styles.title}>YDS Kelimeler</Text>
-            {randomizedData.slice(index, index + 3).map((item, i) => (
-                <View key={i} style={[styles.cardWrapper, {transform: [{translateY: i * 15},]}]}>
-                    <Card data={item} onDismiss={handleDismiss}/>
-                </View>
-            ))}
+            <View style={[styles.cardWrapper, {transform: [{translateY: 1 * 15},]}]}>
+                <Card data={data.dictionary[0]}/>
+            </View>
         </View>
     );
 }
