@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import data from '@/assets/all.json';
 import Card from "@/components/Card";
 
@@ -18,6 +18,15 @@ export default function HomeScreen() {
         setRandomizedData(shuffleArray([...data.dictionary]));
     }, []);
 
+    const handleSwipe = () => {
+        setRandomizedData((prevData) => {
+            const newData = [...prevData];
+            newData.shift();
+            newData.push(data.dictionary[Math.floor(Math.random() * data.dictionary.length)]);
+            return newData;
+        });
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>YDS Kelimeler</Text>
@@ -25,13 +34,13 @@ export default function HomeScreen() {
                 {randomizedData.length > 0 && (
                     <>
                         <View style={[styles.cardWrapper, styles.cardPosition1]}>
-                            <Card data={randomizedData[0]} />
+                            <Card data={randomizedData[0]} onSwipe={handleSwipe}/>
                         </View>
                         <View style={[styles.cardWrapper, styles.cardPosition2]}>
-                            <Card data={randomizedData[1]} />
+                            <Card data={randomizedData[1]}/>
                         </View>
                         <View style={[styles.cardWrapper, styles.cardPosition3]}>
-                            <Card data={randomizedData[2]} />
+                            <Card data={randomizedData[2]}/>
                         </View>
                     </>
                 )}
@@ -55,7 +64,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#2980B9',
     },
     stackContainer: {
-        position: 'relative',
         width: 300,
         height: 300,
     },

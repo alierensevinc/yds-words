@@ -1,10 +1,22 @@
 import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import Animated, {runOnJS, useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
+import Animated, {
+    runOnJS,
+    useAnimatedGestureHandler,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring
+} from 'react-native-reanimated';
+import {PanGestureHandler, State} from 'react-native-gesture-handler';
 
-const Card = ({data}) => {
+const Card = ({
+                  data,
+                  onSwipe = () => {
+                  }
+              }) => {
     const [isAnimating, setIsAnimating] = useState(false);
     const rotateY = useSharedValue(0);
+    const translateX = useSharedValue(0);
 
     const frontAnimatedStyle = useAnimatedStyle(() => {
         const rotate = `${rotateY.value}deg`;
@@ -36,17 +48,43 @@ const Card = ({data}) => {
         }
     };
 
+    const onGestureEvent = useAnimatedGestureHandler({
+        onActive: (event) => {
+            translateX.value = event.translationX;
+        },
+        onEnd: (event) => {
+            if (Math.abs(event.translationX) > 100) {
+                runOnJS(onSwipe)();
+            }
+            translateX.value = withSpring(0, {damping: 20, stiffness: 90});
+        },
+    });
+
+    const animatedStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{translateX: translateX.value}],
+        };
+    });
+
     return (
-        <Pressable onPress={handlePress} disabled={isAnimating}>
-            <View style={styles.cardContainer}>
-                <Animated.View style={[styles.card, frontAnimatedStyle]}>
-                    <Text style={styles.textEnglish}>{data.english}</Text>
-                </Animated.View>
-                <Animated.View style={[styles.card, backAnimatedStyle]}>
-                    <Text style={styles.textTurkish}>{data.turkish}</Text>
-                </Animated.View>
-            </View>
-        </Pressable>
+        <PanGestureHandler
+            onGestureEvent={onGestureEvent}
+        >
+            <Animated.View style={[styles.cardContainer, animatedStyle]}>
+
+            <Pressable onPress={handlePress} disabled={isAnimating}>
+                <View style={styles.cardContainer}>
+                    <Animated.View style={[styles.card, frontAnimatedStyle]}>
+                        <Text style={styles.textEnglish}>{data.english}</Text>
+                    </Animated.View>
+                    <Animated.View style={[styles.card, backAnimatedStyle]}>
+                        <Text style={styles.textTurkish}>{data.turkish}</Text>
+                    </Animated.View>
+                </View>
+            </Pressable>
+            </Animated.View>
+
+        </PanGestureHandler>
     );
 };
 
@@ -54,7 +92,6 @@ const styles = StyleSheet.create({
     cardContainer: {
         width: 300,
         height: 300,
-        margin: 20,
     },
     card: {
         width: '100%',
