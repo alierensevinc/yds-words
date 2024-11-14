@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Animated, {
-    interpolate,
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring
-} from 'react-native-reanimated';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring, runOnJS } from 'react-native-reanimated';
 
 const Card = ({ data }) => {
+    const [isAnimating, setIsAnimating] = useState(false);
     const rotateY = useSharedValue(0);
 
     const frontAnimatedStyle = useAnimatedStyle(() => {
@@ -32,11 +28,16 @@ const Card = ({ data }) => {
     });
 
     const handlePress = () => {
-        rotateY.value = withSpring(rotateY.value + 180, { damping: 20, stiffness: 75 });
+        if (!isAnimating) {
+            setIsAnimating(true);
+            rotateY.value = withSpring(rotateY.value + 180, { damping: 20, stiffness: 75 }, () => {
+                runOnJS(setIsAnimating)(false);
+            });
+        }
     };
 
     return (
-        <TouchableOpacity onPress={handlePress}>
+        <Pressable onPress={handlePress} disabled={isAnimating}>
             <View style={styles.cardContainer}>
                 <Animated.View style={[styles.card, frontAnimatedStyle]}>
                     <Text style={styles.text}>{data.english}</Text>
@@ -45,7 +46,7 @@ const Card = ({ data }) => {
                     <Text style={styles.text}>{data.turkish}</Text>
                 </Animated.View>
             </View>
-        </TouchableOpacity>
+        </Pressable>
     );
 };
 
