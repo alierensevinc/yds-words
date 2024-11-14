@@ -1,16 +1,28 @@
 import {StyleSheet, Text, View} from 'react-native';
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import data from '@/assets/all.json';
 import Card from "@/components/Card";
 
 export default function HomeScreen() {
-    const [index, setIndex] = useState(0);
+    const [randomizedData, setRandomizedData] = useState([]);
+
+    useEffect(() => {
+        const shuffleArray = (array) => {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        };
+
+        setRandomizedData(shuffleArray([...data.dictionary]));
+    }, []);
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>YDS Kelimeler</Text>
             <View style={[styles.cardWrapper, {transform: [{translateY: 1 * 15},]}]}>
-                <Card data={data.dictionary[0]}/>
+                {randomizedData.length > 0 && <Card data={randomizedData[0]}/>}
             </View>
         </View>
     );
